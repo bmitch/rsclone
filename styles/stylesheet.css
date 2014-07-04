@@ -1,0 +1,28 @@
+.container
+{
+	background-color:red;
+	padding: 25px;
+}
+
+textarea 
+{
+    border: none;
+    overflow: auto;
+    outline: none;
+
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+textarea.news
+{
+	height:560px;
+	width:400px;
+}
+
+textarea.grapevine
+{
+	height:460px;
+	width:350px;
+}
