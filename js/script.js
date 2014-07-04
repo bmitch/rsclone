@@ -33,9 +33,25 @@ function loadView(sViewToLoad)
     $(document).trigger( "viewLoaded" );
 }
 
+function loadWindow(sWindowToLoad)
+{
+	sWindowToLoad = "views/" + sWindowToLoad + ".html"; 
+	jQuery.ajax({
+	url:    sWindowToLoad,
+    success: function(result) 
+    {
+    	$(result).insertAfter("#main");
+    	$(".dialog").dialog({ dialogClass: 'topleftcorner'});
+    },
+    // we don't want to do anything until the view loads
+    async:   false
+});   
+
+
+}
+
 function clearView()
 {
-	console.log("clear");
 	$("#main").html("");
 }
 
@@ -43,25 +59,20 @@ function setupGame()
 {
 	Game = new Object();
 	Game.difficulty = 5;
-
-	Game.Player = new Object();
-	Game.Player.name = "";
-
+	Game.Player = createPlayer();
 }
 
 function initListeners()
 {
-
-
 	$('#stagename').on('keypress', function (e) 
 	{
-
 		var key = e.which || e.keyCode;
 	    if (key == 13) 
-	    { 
-	    	console.log("Enter");
+	    {
 	    	Game.Player.name = $(this).val();
 	    	clearView();
+	    	loadView("mainscreen");
+	    	loadWindow("whattodo");
 	    }
 	});
 	
@@ -69,4 +80,20 @@ function initListeners()
 
 }
 
+function createPlayer()
+{
+	Player = new Object();
+	Player.name			= "";
+	Player.health		= 100;
+	Player.creativity	= 100;
+	Player.happiness 	= 100;
+	Player.alertness	= 100;
+
+	Player.getHealth = function()
+	{
+		return Player.health;
+	}
+
+	return Player;
+}
 

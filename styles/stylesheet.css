@@ -2,6 +2,7 @@
 {
 	background-color:red;
 	padding: 25px;
+	height:640px;
 }
 
 textarea 
@@ -25,4 +26,12 @@ textarea.grapevine
 {
 	height:460px;
 	width:350px;
+}
+
+/* dialog window positioning */
+div.topleftcorner
+{
+    position: absolute;
+    left: 450px !important; 
+    top: 70px !important;
 }
