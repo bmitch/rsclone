@@ -1,10 +1,9 @@
-var Game;
+var Game = new Object();
 
 $(document).ready(function()
 {
 	init();
 });
-
 
 function init()
 {
@@ -12,42 +11,11 @@ function init()
 	{
 		initListeners();
 	});
-
-	setupGame();
-	loadView("getstagename");
-}
-
-
-function loadView(sViewToLoad)
-{
-	sViewToLoad = "views/" + sViewToLoad + ".html"; 
-	jQuery.ajax({
-    	url:    sViewToLoad,
-        success: function(result) 
-        {
-        	$("#main").html(result);
-        },
-        // we don't want to do anything until the view loads
-        async:   false
-    });   
-    $(document).trigger( "viewLoaded" );
-}
-
-function loadWindow(sWindowToLoad)
-{
-	sWindowToLoad = "views/" + sWindowToLoad + ".html"; 
-	jQuery.ajax({
-	url:    sWindowToLoad,
-    success: function(result) 
-    {
-    	$(result).insertAfter("#main");
-    	$(".dialog").dialog({ dialogClass: 'topleftcorner'});
-    },
-    // we don't want to do anything until the view loads
-    async:   false
-});   
-
-
+	initDisplay();
+	initGame();
+	initMenus();
+	
+	Display.LoadView("getstagename");
 }
 
 function clearView()
@@ -55,15 +23,71 @@ function clearView()
 	$("#main").html("");
 }
 
-function setupGame()
+function initGame()
 {
 	Game = new Object();
 	Game.difficulty = 5;
 	Game.Player = createPlayer();
 }
 
+function initDisplay()
+{
+	Display = new Object();
+
+	Display.LoadWindow = function(sWindowToLoad)
+	{
+		sWindowToLoad = "views/" + sWindowToLoad + ".html"; 
+		jQuery.ajax({
+				url:    sWindowToLoad,
+			    success: function(result) 
+			    {
+			    	$(result).insertAfter("#main");
+			    	$(".dialog").dialog({ dialogClass: 'topleftcorner'});
+			    },
+			    // we don't want to do anything until the view loads
+			    async:   false
+			}); 
+	}  
+
+	Display.LoadView = function(sViewToLoad)
+	{
+		sViewToLoad = "views/" + sViewToLoad + ".html"; 
+		jQuery.ajax({
+	    	url:    sViewToLoad,
+	        success: function(result) 
+	        {
+	        	$("#main").html(result);
+	        },
+	        // we don't want to do anything until the view loads
+	        async:   false
+	    });   
+	    $(document).trigger( "viewLoaded" );
+	}
+
+	Display.LoadMenu = function(MenuToLoad)
+	{
+		var MenuList = $(".menu");
+		var sMenuItemHTML = ''; 
+
+		// loop through object
+		for (var key in MenuToLoad) {			
+			if (MenuToLoad.hasOwnProperty(key)) 
+			{
+				sMenuItemHTML = '<li class="list-group-item" ><a href="#" class="window-option menu-option" data-menuoption="'; 
+				sMenuItemHTML += key + '">' + MenuToLoad[key] + "</a></li>\n";
+				//console.log(key + " > " + MenuToLoad[key]);
+				console.log(sMenuItemHTML);
+				MenuList.append(sMenuItemHTML);
+			}
+		}
+		
+	}
+
+}
+
 function initListeners()
 {
+
 	$('#stagename').on('keypress', function (e) 
 	{
 		var key = e.which || e.keyCode;
@@ -71,13 +95,29 @@ function initListeners()
 	    {
 	    	Game.Player.name = $(this).val();
 	    	clearView();
-	    	loadView("mainscreen");
-	    	loadWindow("whattodo");
+	    	Display.LoadView("mainscreen");
+	    	Display.LoadWindow("whattodo");
+	    	Display.LoadMenu(Menus.WhatToDo);
 	    }
 	});
-	
+}
 
-
+function initMenus()
+{
+	Menus = 
+	{
+		WhatToDo: 
+		{
+			"L" : "Laze Around for a while",
+			"W" : "Write songs & practise",
+			"G" : "Gig",
+			"R" : "Record a single or album",
+			"H" : "Have a holiday",
+			"V" : "Visit your doctor",
+			"C" : "Consult your analyst",
+			"U" : "Unwind in a sanitorium"
+		}
+	}
 }
 
 function createPlayer()
