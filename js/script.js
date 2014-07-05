@@ -7,7 +7,7 @@ $(document).ready(function()
 
 function init()
 {
-	$(document).on("viewLoaded", function()
+	$(document).on("PageLoad", function()
 	{
 		initListeners();
 	});
@@ -26,6 +26,7 @@ function clearView()
 function initGame()
 {
 	Game = new Object();
+	Game.scene ="init";
 	Game.difficulty = 5;
 	Game.Player = createPlayer();
 }
@@ -61,7 +62,8 @@ function initDisplay()
 	        // we don't want to do anything until the view loads
 	        async:   false
 	    });   
-	    $(document).trigger( "viewLoaded" );
+	    $(document).trigger( "PageLoad" );
+	    Game.scene = sViewToLoad;
 	}
 
 	Display.LoadMenu = function(MenuToLoad)
@@ -73,13 +75,29 @@ function initDisplay()
 		for (var key in MenuToLoad) {			
 			if (MenuToLoad.hasOwnProperty(key)) 
 			{
-				sMenuItemHTML = '<li class="list-group-item" ><a href="#" class="window-option menu-option" data-menuoption="'; 
-				sMenuItemHTML += key + '">' + MenuToLoad[key] + "</a></li>\n";
-				//console.log(key + " > " + MenuToLoad[key]);
-				console.log(sMenuItemHTML);
-				MenuList.append(sMenuItemHTML);
+				if (key !== "Name")
+				{				
+					sMenuItemHTML = '<li class="list-group-item" ><a href="#" class="window-option menu-option" data-menuoption="'; 
+					sMenuItemHTML += key + '">' + MenuToLoad[key] + "</a></li>\n";
+					MenuList.append(sMenuItemHTML);
+				}
 			}
 		}
+		$(document).trigger( "PageLoad" );
+		Game.scene = MenuToLoad.Name;
+		
+	}
+
+	Display.UpdatePlayerStatus = function()
+	{
+		$(".statusbar").each(function() {
+			var StatusBar = $(this);
+			var StatusBarImg = $("img", this);
+			var sNameOfStatus = StatusBar.attr("id");
+			var nStatusValue = Player[sNameOfStatus];
+			StatusBarImg.css('width', nStatusValue * 3);
+
+		});
 		
 	}
 
@@ -87,6 +105,11 @@ function initDisplay()
 
 function initListeners()
 {
+
+	$(document).on("PageLoad", function()
+	{
+		Display.UpdatePlayerStatus();
+	});
 
 	$('#stagename').on('keypress', function (e) 
 	{
@@ -100,6 +123,16 @@ function initListeners()
 	    	Display.LoadMenu(Menus.WhatToDo);
 	    }
 	});
+
+	$(".menu-option").on("click", function()
+	{
+		var MenuItem = $(this);
+		var sMenuOption = MenuItem.attr("data-menuoption");
+		console.log(sMenuOption);
+		console.log(Game.scene);
+	});
+
+	
 }
 
 function initMenus()
@@ -108,6 +141,7 @@ function initMenus()
 	{
 		WhatToDo: 
 		{
+			"Name" : "WhatToDo",
 			"L" : "Laze Around for a while",
 			"W" : "Write songs & practise",
 			"G" : "Gig",

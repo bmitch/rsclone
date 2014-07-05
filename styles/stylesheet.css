@@ -1,8 +1,12 @@
+*
+{
+    font-family: 'Droid Sans Mono';
+}
 .container
 {
 	background-color:red;
 	padding: 25px;
-	height:640px;
+	height:670px;
 }
 
 textarea 
@@ -14,18 +18,19 @@ textarea
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
+    background-color: black;
 }
 
 textarea.news
 {
-	height:560px;
+	height:490px;
 	width:400px;
 }
 
 textarea.grapevine
 {
 	height:460px;
-	width:350px;
+	width:440px;
 }
 
 /* dialog window positioning */
@@ -34,4 +39,15 @@ div.topleftcorner
     position: absolute;
     left: 450px !important; 
     top: 70px !important;
+}
+
+.player-status
+{
+    line-height: 4px;
+    font-size: 12px;
+}
+
+.statusbar img
+{
+    height:10px;
 }
